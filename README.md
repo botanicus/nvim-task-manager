@@ -12,14 +12,14 @@ This is your GTD inbox and contexts.
 
 ```
 Blog
-- Import old articles
-- Fix deployment
+- Import old articles.
+- Fix deployment.
 
 Prague
-- Catch up with Vaclav
+- Catch up with Vaclav.
 
 24/12
-- [9:20] Skype with Jaime
+- [9:20] Skype with Jaime.
 
 # This is essencially GTD inbox.
 Later
@@ -37,12 +37,12 @@ This file works as an archive at the same time.
 
 ```
 # Objectives:
-# - Deploy the new blog
+# - Deploy the new blog.
 # - ...
 
 Monday
-- Headspace #meditation
-- [10:15] Yoga
+- Headspace. #meditation
+- [10:15] Yoga.
 ```
 
 #### Format extension
@@ -60,9 +60,11 @@ While the `tasks.todo` format supports only one task per line, the per-week file
 
 # TODO
 
+- NextWeek, PrevWeek.
 - Format: show metadata of finished tasks as comments as well.
 - Switching between tasks.todo and a per-week file.
 - Support named commands.
 - Postponing should create a new task in tasks.todo.
 - Launch scheduler to show notifications.
 - Write the doc.
+- TODO: enter: \n- , 2x cancel
