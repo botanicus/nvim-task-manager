@@ -4,6 +4,10 @@ Manage your task list without ever leaving Vim.
 
 _This is a very minimalistic plugin and the README documents how I use it more so than anything else._
 
+# Usage
+
+`vim +TaskManager`
+
 ## File hierarchy
 
 ### Top-level `tasks.todo`
@@ -60,10 +64,11 @@ While the `tasks.todo` format supports only one task per line, the per-week file
 
 # TODO
 
+- Support start_time (9:20).
+- Parser: support started_at-done_at.
 - NextWeek, PrevWeek.
 - Format: show metadata of finished tasks as comments as well.
 - Switching between tasks.todo and a per-week file.
-- Support named commands.
 - Postponing should create a new task in tasks.todo.
 - Launch scheduler to show notifications.
 - Write the doc.

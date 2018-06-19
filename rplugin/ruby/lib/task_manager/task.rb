@@ -1,4 +1,5 @@
 require_relative 'parser'
+require_relative 'config'
 
 module TaskManager
   class Task
@@ -19,7 +20,7 @@ module TaskManager
 
     def self.process(nvim, &block)
       task = self.parse(nvim.current.line)
-      block.call(task)
+      block.call(task, Config.new)
       nvim.current.line = task.to_s
     end
 
@@ -31,22 +32,27 @@ module TaskManager
     def initialize(**data)
       @data = data
       @data[:tags] ||= Array.new
+      @data[:done_at] ||= '????'
+    end
+
+    def tags
+      @data[:tags]
     end
 
     def start!
       @data[:status] = :started
-      @data[:start_time] = Hour.now
+      @data[:started_at] = Hour.now
     end
 
     def done!
       @data[:status] = :done
-      if @data[:start_time]
-        @data[:end_time] = Hour.now
+      if @data[:started_at]
+        @data[:done_at] = Hour.now
       end
     end
 
     def to_s
-      interval = "[%{start_time}-%{end_time}]" % @data if @data[:start_time]
+      interval = "[%{started_at}-%{done_at}]" % @data if @data[:started_at]
       status_symbol = STATUS[@data[:status]].first
       (["#{[status_symbol, interval].compact.join(' ')} %{body}" % @data] | @data[:tags].map { |tag| "##{tag}" }).join(' ')
     end
