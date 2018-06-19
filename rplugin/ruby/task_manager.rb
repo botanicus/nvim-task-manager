@@ -1,6 +1,5 @@
 require_relative './lib/task_manager/task'
 
-# TODO: Make it available only for *.todo files.
 # https://github.com/alexgenco/neovim-ruby
 Neovim.plugin do |plugin|
   plugin.command(:TaskManager) do |nvim|
@@ -11,20 +10,35 @@ Neovim.plugin do |plugin|
 
   # Mapped to `<leader>c`.
   plugin.command(:TaskManagerCycle) do |nvim|
-    if File.basename(nvim.current.buffer.name) == 'tasks.todo'
+    case File.basename(nvim.current.buffer.name)
+    when 'tasks.todo'
       nvim.command("w | edit #{Time.now.strftime('%Y/%W')}.todo")
+    when /^\d+\.todo$/
+      nvim.command("w | edit #{Time.now.strftime('%Y/%W')}.notes")
     else
       nvim.command("w | edit tasks.todo")
     end
   end
 
-  # Mapped to `<leader>d`.
-  plugin.command(:MarkTaskAsDone) do |nvim|
-    TaskManager::Task.process(nvim, &:done!)
-    # nvim.current.pos += nvim.current.pos
+  # Mapped to `<leader>j`.
+  plugin.command(:CycleTasksAndJournal) do |nvim|
+    if File.basename(nvim.current.buffer.name) == 'tasks.todo'
+      nvim.command("w | edit #{Time.now.strftime('%Y/%W')}.notes")
+    elsif (x = nvim.current.buffer.name.split('/')[-3..-1].join('/')).match(/^\d{4}\/\d{2}\.(todo|notes)$/)
+      type = Regexp.last_match(1)
+      type_2 = {todo: 'notes', notes: 'todo'}[type]
+      nvim.command("w | edit #{x.sub(/\.#{type}$/, ".#{type_2}")}")
+    end
   end
 
-  # postpone, nargs: 2 do |nvim, a, b
+  # Mapped to `<leader>d`.
+  plugin.command(:MarkTaskAsDone) do |nvim|
+    TaskManager::Task.process(nvim) do |task, config|
+      task.done!
+    end
+
+    nvim.command("execute 'normal! j'")
+  end
 
   plugin.command(:ParseTask) do |nvim|
     task = TaskManager::Task.parse(nvim.current.line)

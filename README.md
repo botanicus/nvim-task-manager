@@ -64,11 +64,12 @@ While the `tasks.todo` format supports only one task per line, the per-week file
 
 # TODO
 
+- `postpone, nargs: 2 do |nvim, a, b|`
+- Make it available only for *.todo files.
 - Support start_time (9:20).
 - Parser: support started_at-done_at.
 - NextWeek, PrevWeek.
 - Format: show metadata of finished tasks as comments as well.
-- Switching between tasks.todo and a per-week file.
 - Postponing should create a new task in tasks.todo.
 - Launch scheduler to show notifications.
 - Write the doc.
