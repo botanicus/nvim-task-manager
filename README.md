@@ -64,6 +64,9 @@ While the `tasks.todo` format supports only one task per line, the per-week file
 
 # TODO
 
+- `:TaskManager`: only search in today. This might grant extending the parser: `task_groups[today].find(&:unstarted).line_number`
+- `:TaskReset`
+- Instead of cycle, use \w -> week, \j -> journal, \i -> inbox (but allow them to cycle).
 - `postpone, nargs: 2 do |nvim, a, b|`
 - Make it available only for *.todo files.
 - Support start_time (9:20).
