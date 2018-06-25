@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+require 'find'
+require_relative '../rplugin/ruby/lib/task_manager/config'
+
+extension = ARGV.first || 'todo'
+
+config = TaskManager::Config.new
+puts config.root.expand_path.find.map { |path|
+  next unless path.extname == ".#{extension}"
+  path.read.scan(/#([^\s]+)/)
+}.flatten.uniq.compact

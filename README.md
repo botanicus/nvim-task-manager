@@ -88,18 +88,18 @@ commands:
 
 # TODO
 
-- find ~/Dropbox/Data/Tasks | grep '\.todo$' | ruby -ne 'puts File.read($_.chomp).scan(/#[^\s]+/).flatten.uniq' | sort -ru
-- UltiSnips. (In user space: tag completion, template (how to do schedules?))
+- Expenses format: support tags, support tag completion.
+- Consider changing the .todo extension to .week.
 - `:TaskManager`: only search in today. This might grant extending the parser: `task_groups[today].find(&:unstarted).line_number`
 - `:TaskReset`
 - Instead of cycle, use \w -> week, \j -> journal, \i -> inbox (but allow them to cycle).
 - `postpone, nargs: 2 do |nvim, a, b|`
 - Make it available only for *.todo files.
 - Support start_time (9:20).
-- Parser: support started_at-done_at.
 - NextWeek, PrevWeek.
 - Format: show metadata of finished tasks as comments as well.
 - Postponing should create a new task in tasks.todo.
 - Launch scheduler to show notifications.
 - Write the doc.
 - TODO: enter: \n- , 2x cancel
+- Do not override start_time by start_at (or do?).
