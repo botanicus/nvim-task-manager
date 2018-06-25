@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'yaml'
+
+data = YAML.load_file('25.expenses')
+
+expenses_per_day = data.each_with_object(Hash.new) do |(day, items), result|
+  default_hash = Hash.new { |hash, key| hash[key] = 0 }
+  result[day] = items.map(&:values).flatten.each_with_object(default_hash) do |price_and_currency, amounts|
+    amount, currency = price_and_currency.split(' ')
+    amounts[currency] += amount.to_f
+  end
+end
+
+
+default_hash = Hash.new { |hash, key| hash[key] = 0 }
+overall_expenses = expenses_per_day.each_with_object(default_hash) do |(day, currency_amount_hash), result|
+  currency_amount_hash.each do |currency, amount|
+    result[currency] += amount
+  end
+end
+
+puts "Expenses per day: #{expenses_per_day.inspect}"
+puts "Overall expenses: #{overall_expenses.inspect}"
