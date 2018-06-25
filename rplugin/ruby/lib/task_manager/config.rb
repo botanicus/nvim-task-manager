@@ -14,6 +14,8 @@ module TaskManager
       data = YAML.load_file(@config_path)
       data['commands'] ||= Array.new
       @config = OpenStruct.new(data)
+    rescue Errno::ENOENT
+      OpenStruct.new(commands: Array.new)
     end
 
     def root

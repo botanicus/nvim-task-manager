@@ -32,7 +32,24 @@ module TaskManager
     def initialize(**data)
       @data = data
       @data[:tags] ||= Array.new
-      @data[:done_at] ||= '????'
+    end
+
+    def status
+      if @data[:status_symbol] == '-' && @data[:started_at]
+        return :started
+      end
+
+      STATUS.find do |status_name, status_symbols|
+        status_symbols.include?(@data[:status_symbol])
+      end.first
+    end
+
+    def status=(status_name)
+      @data[:status_symbol] = STATUS[status_name].first
+    end
+
+    def body
+      @data[:body]
     end
 
     def tags
@@ -40,21 +57,33 @@ module TaskManager
     end
 
     def start!
-      @data[:status] = :started
-      @data[:started_at] = Hour.now
+      self.status = :started
+      @data[:started_at] = Hour.now(s: false)
+      @data[:done_at] = '????'
+    end
+
+    def unstarted?
+      self.status == :unstarted
+    end
+
+    def started?
+      self.status == :started
+    end
+
+    def done?
+      self.status == :done
     end
 
     def done!
-      @data[:status] = :done
+      self.status = :done
       if @data[:started_at]
-        @data[:done_at] = Hour.now
+        @data[:done_at] = Hour.now(s: false)
       end
     end
 
     def to_s
       interval = "[%{started_at}-%{done_at}]" % @data if @data[:started_at]
-      status_symbol = STATUS[@data[:status]].first
-      (["#{[status_symbol, interval].compact.join(' ')} %{body}" % @data] | @data[:tags].map { |tag| "##{tag}" }).join(' ')
+      (["#{[@data[:status_symbol], interval].compact.join(' ')} %{body}" % @data] | @data[:tags].map { |tag| "##{tag}" }).join(' ')
     end
   end
 end

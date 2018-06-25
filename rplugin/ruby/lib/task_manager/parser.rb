@@ -4,7 +4,7 @@ require 'hour'
 module TaskManager
   class TaskParser < Parslet::Parser
     rule(:status_symbol) do
-      (match['-✓✔✕✖✗✘'].as(:status_symbol) >> str(' ')).as(:status)
+      (match['-✓✔✕✖✗✘'].as(:str) >> str(' ')).as(:status_symbol)
     end
 
     rule(:hour_strict) do
@@ -33,8 +33,20 @@ module TaskManager
       str('#') >> match['^\s'].repeat.as(:str) >> str(' ').maybe
     end
 
+    rule(:started_at) do
+      hour_strict.as(:started_at)
+    end
+
+    rule(:done_at) do
+      (hour_strict | str('????')).as(:str).as(:done_at)
+    end
+
+    rule(:from_to) do
+      str('[') >> started_at >> str('-') >> done_at >> str('] ')
+    end
+
     rule(:task) do
-      (status_symbol >> time_frame.as(:time_frame).maybe >> start_time.maybe >> task_body.as(:body) >> tag.as(:tag).repeat.as(:tags).maybe).as(:task) >> str("\n").repeat
+      (status_symbol >> time_frame.as(:time_frame).maybe >> from_to.maybe >> start_time.maybe >> task_body.as(:body) >> tag.as(:tag).repeat.as(:tags).maybe).as(:task) >> str("\n").repeat
     end
 
     root(:task)
@@ -46,13 +58,11 @@ module TaskManager
     rule(tag: simple(:slice)) { slice.to_sym }
 
     rule(hour: simple(:hour_string)) do
-      Hour.parse(hour_string.to_s)
+      Hour.parse(hour_string.to_s, s: false)
     end
 
     rule(status_symbol: simple(:status_symbol)) do
-      TaskManager::Task::STATUS.find do |status, symbol_list|
-        symbol_list.include?(status_symbol.to_s)
-      end.first
+      TaskManager::Task::STATUS.determine_status(status_symbol.to_s)
     end
 
     rule(task: subtree(:data)) do

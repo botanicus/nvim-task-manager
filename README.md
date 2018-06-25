@@ -2,8 +2,6 @@
 
 Manage your task list without ever leaving Vim.
 
-_This is a very minimalistic plugin and the README documents how I use it more so than anything else._
-
 # Usage
 
 `vim +TaskManager`
@@ -32,7 +30,7 @@ Later
 
 ### Per-week task file `YYYY/%WW.todo`
 
-Personally I found weeks the easiest
+Personally I found weeks the easiest unit to work with.
 I found planning for a longer periods of time than just a day highly beneficial.
 
 And since a month is a long time and _I'll do it tomorrow_ is a thing, I found weeks most easily manageable. It's still good to plan for longer periods of time than just a week, but this file is meant as an _execution plan_.
@@ -62,8 +60,36 @@ While the `tasks.todo` format supports only one task per line, the per-week file
 - `Postponed to: date`
 - `Waiting for: event`
 
+### Per-week expense file `YYYY/%WW.expenses`
+
+The expense file is to be a valid YAML file.
+
+```yaml
+Monday:
+- Expense 1: 10 EUR
+- Expense 2: 30 USD
+
+Tuesday:
+# ...
+```
+
+## Configuration
+
+```yaml
+root: ~/Dropbox/Data/Tasks
+commands:
+  hs: headspace play
+  lf: lifeflow play
+```
+
+## Scripts
+
+`bin/expenses`
+
 # TODO
 
+- find ~/Dropbox/Data/Tasks | grep '\.todo$' | ruby -ne 'puts File.read($_.chomp).scan(/#[^\s]+/).flatten.uniq' | sort -ru
+- UltiSnips. (In user space: tag completion, template (how to do schedules?))
 - `:TaskManager`: only search in today. This might grant extending the parser: `task_groups[today].find(&:unstarted).line_number`
 - `:TaskReset`
 - Instead of cycle, use \w -> week, \j -> journal, \i -> inbox (but allow them to cycle).
