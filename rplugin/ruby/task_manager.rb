@@ -83,6 +83,18 @@ Neovim.plugin do |plugin|
     nvim.command("w")
   end
 
+  plugin.function(:ListTaskManagerTags) do |nvim|
+    require 'find'
+
+    config = TaskManager::Config.new
+    tags = config.root.expand_path.find.map { |path|
+      next unless path.extname == '.todo'
+      path.read.scan(/#[^\s]+/)
+    }.flatten.uniq.compact
+
+    nvim.command("echo '#{tags}'")
+  end
+
   # Define an autocmd for the BufEnter event on Ruby files.
   # http://vimdoc.sourceforge.net/htmldoc/autocmd.html
   plugin.autocmd(:BufEnter, pattern: "*.todo") do |nvim|
